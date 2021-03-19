@@ -8,13 +8,13 @@ import { validator as v1Validator } from '~routes/v1/middleware/validator.mjs';
 dotenv.config();
 
 const app = express();
-app.use(v1Validator);
+//app.use(v1Validator);
 
 app.use(morgan('combined'));
 
 app.use(express.json({ limit: '100mb' }));
 app.use(express.urlencoded({ extended: true }));
-app.use('/v1/', v1);
+app.use('/v1', v1);
 
 app.use(function (req, res, next) {
     res.setHeader('Access-Control-Allow-Origin', process.env.CLIENT_URL);
