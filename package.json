@@ -1,0 +1,53 @@
+{
+  "name": "rest-shipping",
+  "version": "1.0.0",
+  "description": "The goal of this repository is to provide a service to those, who are also impressed by the inability of large shipping services to provide us, developers, with rest-based, well documented, and maintained API endpoints to fetch their service in an automated way.",
+  "main": "app.mjs",
+  "scripts": {
+    "test": "node src/app.mjs",
+    "start": "nodemon src/app.mjs",
+    "postinstall": "link-module-alias"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/flowluap/rest-shipping.git"
+  },
+  "keywords": [
+    "dpd",
+    "dhl",
+    "shipping",
+    "shipping-provider",
+    "provider",
+    "rest"
+  ],
+  "author": "Paul Wolf - flowluap",
+  "license": "AGPL-3.0",
+  "bugs": {
+    "url": "https://github.com/flowluap/rest-shipping/issues"
+  },
+  "homepage": "https://github.com/flowluap/rest-shipping#readme",
+  "engines": {
+    "node": ">=14.15.0"
+  },
+  "_moduleAliases": {
+    "~controller": "src/controller",
+    "~routes": "src/routes",
+    "~util": "src/util",
+    "~services": "src/services"
+  },
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-openapi-validator": "^4.12.5",
+    "link-module-alias": "1.2.0",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "eslint": "^7.19.0",
+    "eslint-config-prettier": "7.2.0",
+    "eslint-plugin-node": "11.1.0",
+    "eslint-plugin-prettier": "3.3.1",
+    "nodemon": "^2.0.7",
+    "prettier": "^2.2.1"
+  }
+}
