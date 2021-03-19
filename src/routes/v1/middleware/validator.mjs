@@ -2,6 +2,6 @@ import openApiValidator from 'express-openapi-validator';
 
 
 export const validator = openApiValidator.middleware({
-    apiSpec: './apispec.yaml',
+    apiSpec: './src/routes/v1/middleware/apispec.yaml',
     validateRequests: true,
 })

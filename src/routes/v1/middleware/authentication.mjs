@@ -1,5 +1,4 @@
-import bcrypt from 'bcryptjs';
-import { BadRequestError } from '@util/restError.mjs';
+import { BadRequestError } from '~util/restError.mjs';
 
 export async function authenticateService(req, res, next) {
     if (!req.headers.authorization || req.headers.authorization.indexOf('Basic ') === -1) {
@@ -10,14 +9,10 @@ export async function authenticateService(req, res, next) {
     const credentials = Buffer.from(base64Credentials, 'base64').toString('ascii');
 
     const [username, password] = credentials.split(':');
+    console.log("Client: " + username)
 
-    const [service] = await db.query('SELECT * from service where name=?', [username]);
 
-    if (service[0] && bcrypt.compareSync(password, service[0].hash)) {
-        req.user = {};
-        req.shop = {};
-        req.user.id = req.headers['userid'];
-        req.shop.id = req.headers['shopid'];
+    if (process.env.ACCESS_TOKEN == password) {
         next();
     } else {
         next(new BadRequestError('Authentication failed'));
