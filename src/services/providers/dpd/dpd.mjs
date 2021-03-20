@@ -56,7 +56,7 @@ async function getLabel(shippingData) {
                 ParcelData: {
                     YourInternalID: "Not used",
                     Content: "Clothing",
-                    Weight: shippingData.parcel.weight,
+                    Weight: shippingData.parcel ? shippingData.parcel.weight : 0,
                     Reference1: "Not used",
                     // Reference2: "",
                     ShipService: "Classic"
@@ -65,7 +65,7 @@ async function getLabel(shippingData) {
         ]
     };
     return await axios
-        .post(config.shipping.api + "/setOrder", json, options)
+        .post(process.env.DPD_SHIPPING_API+ "/setOrder", json, options)
         .then((result) => {
             if (result.status === 200 && result.data.ErrorDataList === null) {
                 const trackingNumber = result.data.LabelResponse.LabelDataList[0].ParcelNo;
@@ -77,10 +77,6 @@ async function getLabel(shippingData) {
             }
             throw JSON.stringify(result.data.ErrorDataList);
         })
-        .catch((error) => {
-            console.error(error);
-            return null;
-        });
 }
 
 export default { getLabel }

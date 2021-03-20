@@ -26,6 +26,8 @@ function sanitizeAddress(receipient) {
         lastName: receipient.last_name,
         company: receipient.company,
         countryCode: receipient.country_code,
+        zipCode: receipient.zip,
+        city: receipient.city,
         phone: receipient.phone,
         notice: receipient.address2
     };
