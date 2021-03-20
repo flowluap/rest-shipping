@@ -19,6 +19,7 @@ If things, listed above, have been fixed, feel free to remove them in a pull req
 - [ ] logo to Label rendering
 - [ ] Webhooks on change
 - [ ] Tracking
+- [ ] Integrationtest for each provider (e.g. is service up like: https://status.jtl-shipping.de/)
 
 ## Providers:
 - [ ] DPD
