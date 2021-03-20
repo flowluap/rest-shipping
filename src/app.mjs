@@ -27,7 +27,7 @@ app.use(function (req, res, next) {
 });
 
 // used to raise specific warnings in json response on e.g. bad requests
-const ignoredErrors = [401];
+const ignoredErrors = [400];
 app.use((err, req, res, next) => {
     if (err.errors) {
         err = new RequestValidationError(err.errors);
