@@ -64,6 +64,12 @@ npm start
 - /v1/provider/dpd/getLabel
 --> requires a working addres set
 
+See insomnia requests down below:
+
+![Screenshot from 2021-03-20 19-33-32](https://user-images.githubusercontent.com/49984289/111882365-7205ca00-89b5-11eb-880a-f63442b82868.png)
+![Screenshot from 2021-03-20 19-33-20](https://user-images.githubusercontent.com/49984289/111882367-729e6080-89b5-11eb-9a05-c11c6301ea5d.png)
+![Screenshot from 2021-03-20 19-33-05](https://user-images.githubusercontent.com/49984289/111882368-729e6080-89b5-11eb-9194-ba045fbf1dfd.png)
+
 sanitize address can be used with shop-specific json fiels. Shopify has the speciality to not validate user addresses in their basic plan. So arround 15% of the addresses we imported (3k) have "address2" field set as theire houseNo, as it is the default next field for the TAB key after street. 
 You can freely chain the methods to each other, as the following example states:
 
