@@ -3,35 +3,41 @@ import sanitizer from "~util/v1/sanitizer.mjs"
 import { BadRequestError } from "../../../../util/restError.mjs";
 
 async function getLabel(req, res, next) {
-    dpdService.getLabel(
+    res.json(await dpdService.getLabel(
         req.body
-    )
+    ));
 }
-async function sanitizeAddress(req,res, next) {
+async function sanitizeAddress(req, res, next) {
     let sender = req.body.sender;
     let receipient = req.body.receipient;
     let addressSource = req.body.addressSource;
     let sanitizedReceipient;
     let sanitizedSender = await sanitizer.sanitizeSender(sender);
-    
-    try{
-    if (addressSource){
-        sanitizedReceipient = await sanitizer.specific(receipient, addressSource)
-    }else{
-        sanitizedReceipient = await sanitizer.generic(receipient)
-    }
+
+    try {
+        if (addressSource) {
+            sanitizedReceipient = await sanitizer.specific(receipient, addressSource)
+        } else {
+            sanitizedReceipient = await sanitizer.generic(receipient)
+        }
 
 
-    }catch(e){
+    } catch (e) {
         return next(new BadRequestError(e));
-
     }
 
-    res.json({sender:sanitizedSender, receipient:sanitizedReceipient})
+    res.json({ sender: sanitizedSender, receipient: sanitizedReceipient })
 }
 
-async function checkAddress(req, res, next){
-    res.json(req.body)
+async function checkAddress(req, res, next) {
+    try {
+        await dpdService.getLabel(req.body);
+    } catch (e) {
+        return next(new BadRequestError(e));
+    }
+
+    res.sendStatus(200)
+
 
 
 }
