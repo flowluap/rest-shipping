@@ -74,7 +74,7 @@ See insomnia requests down below:
 ![Screenshot from 2021-03-20 19-33-20](https://user-images.githubusercontent.com/49984289/111882367-729e6080-89b5-11eb-9a05-c11c6301ea5d.png)
 ![Screenshot from 2021-03-20 19-33-05](https://user-images.githubusercontent.com/49984289/111882368-729e6080-89b5-11eb-9194-ba045fbf1dfd.png)
 
-# Why can you define a addressSource?
+# Why can you define an addressSource?
 
 `sanitizeAddress` or `checkAddress` can be used with shop-specific json fields in the `recipient` object. So that you can directly pass shopify REST data to the rest-shipping-service, without any translation
 
