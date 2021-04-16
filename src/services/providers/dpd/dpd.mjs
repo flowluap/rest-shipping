@@ -38,19 +38,19 @@ async function getLabel(shippingData) {
         OrderDataList: [
             {
                 ShipAddress: {
-                    Company: shippingData.receipient.company,
+                    Company: shippingData.recipient.company,
                     Gender: "",
                     Salutation: "",
-                    FirstName: shippingData.receipient.firstName,
-                    LastName: shippingData.receipient.lastName,
-                    Name: `${shippingData.receipient.firstName} ${shippingData.receipient.lastName}`,
-                    Street: shippingData.receipient.street,
-                    HouseNo: shippingData.receipient.streetNo,
-                    ZipCode: shippingData.receipient.zipCode,
-                    City: shippingData.receipient.city,
-                    Country: shippingData.receipient.countryCode,
+                    FirstName: shippingData.recipient.firstName,
+                    LastName: shippingData.recipient.lastName,
+                    Name: `${shippingData.recipient.firstName} ${shippingData.recipient.lastName}`,
+                    Street: shippingData.recipient.street,
+                    HouseNo: shippingData.recipient.streetNo,
+                    ZipCode: shippingData.recipient.zipCode,
+                    City: shippingData.recipient.city,
+                    Country: shippingData.recipient.countryCode,
                     State: "",
-                    Phone: shippingData.receipient.phone,
+                    Phone: shippingData.recipient.phone,
                     Mail: ""
                 },
                 ParcelData: {
@@ -64,6 +64,7 @@ async function getLabel(shippingData) {
             }
         ]
     };
+
     return await axios
         .post(process.env.DPD_SHIPPING_API+ "/setOrder", json, options)
         .then((result) => {
