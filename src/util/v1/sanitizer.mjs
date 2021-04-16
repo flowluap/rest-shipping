@@ -5,12 +5,12 @@ async function sanitizeSender (sender){
     return sender;
 }
 
-async function generic(receipient) {
-    return receipient;
+async function generic(recipient) {
+    return recipient;
 }
 
-async function specific(receipient, source){
-    let sanitizedReceipient; 
+async function specific(recipient, source){
+    let sanitizedRecipient;
     console.log(source)
 
     if (!supportedSources.includes(source)) {
@@ -18,9 +18,9 @@ async function specific(receipient, source){
     }
 
     if (source == "shopify"){
-        sanitizedReceipient = await shopify.sanitizeAddress(receipient);
+        sanitizedRecipient = await shopify.sanitizeAddress(recipient);
     }
-    return sanitizedReceipient;
+    return sanitizedRecipient;
 }
 
 

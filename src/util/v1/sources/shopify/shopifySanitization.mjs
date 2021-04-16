@@ -20,25 +20,25 @@ function checkJSON(address) {
     return true;
 }
 
-function sanitizeAddress(receipient) {
+function sanitizeAddress(recipient) {
     let sanitizedAddress = {
-        firstName: receipient.first_name,
-        lastName: receipient.last_name,
-        company: receipient.company,
-        countryCode: receipient.country_code,
-        zipCode: receipient.zip,
-        city: receipient.city,
-        phone: receipient.phone,
-        notice: receipient.address2
+        firstName: recipient.first_name,
+        lastName: recipient.last_name,
+        company: recipient.company,
+        countryCode: recipient.country_code,
+        zipCode: recipient.zip,
+        city: recipient.city,
+        phone: recipient.phone,
+        notice: recipient.address2
     };
 
-    if (checkJSON(receipient)) {
+    if (checkJSON(recipient)) {
 
         try {
-            sanitizedAddress = { ...sanitizedAddress, ...extractHouseFromStreet(receipient.address1) };
+            sanitizedAddress = { ...sanitizedAddress, ...extractHouseFromStreet(recipient.address1) };
         } catch (e) {
             try {
-                sanitizedAddress = { ...sanitizedAddress, ...extractHouseFromStreet(receipient.address1, receipient.address2, true) };
+                sanitizedAddress = { ...sanitizedAddress, ...extractHouseFromStreet(recipient.address1, recipient.address2, true) };
             } catch (e) {
                 throw new Error("Could not extract streetNo");
             }
