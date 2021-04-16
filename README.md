@@ -22,7 +22,9 @@ If things, listed above, have been fixed, feel free to remove them in a pull req
 - [ ] Integrationtest for each provider (e.g. is service up like: https://status.jtl-shipping.de/)
 
 ## Providers:
-- [ ] DPD
+- [x] DPD (kinda working)
+- [ ] DPD SOAP to be able to set sender https://esolutions.dpd.com/entwickler/dpdwebservices/sandbox_show.aspx
+
 - [ ] DHL
 - [ ] Deutsche Post
 - [ ] Hermes
@@ -36,4 +38,51 @@ If things, listed above, have been fixed, feel free to remove them in a pull req
 - [ ] IFTMIN
 
 
-## ProviderSpecific:
+## ProviderSpecific ToDo's:
+
+## Installation
+
+```
+git clone https://github.com/flowluap/rest-shipping
+cd rest-shipping
+npm i
+cp .env.example .env
+```
+Now edit .env to fit your needs (Tokens)
+
+```
+npm start
+```
+## Available Endpoints:
+
+- /v1/provider/dpd/checkAddress
+--> takes the output of sanitizeAddress and checks if the provider will return data or errors
+
+- /v1/provider/dpd/sanitizeAddress
+--> can sanitize the address according to the provider and addressSource
+
+- /v1/provider/dpd/getLabel
+--> requires a working addres set
+
+See insomnia requests down below:
+
+![Screenshot from 2021-03-20 19-33-32](https://user-images.githubusercontent.com/49984289/111882365-7205ca00-89b5-11eb-880a-f63442b82868.png)
+![Screenshot from 2021-03-20 19-33-20](https://user-images.githubusercontent.com/49984289/111882367-729e6080-89b5-11eb-9a05-c11c6301ea5d.png)
+![Screenshot from 2021-03-20 19-33-05](https://user-images.githubusercontent.com/49984289/111882368-729e6080-89b5-11eb-9194-ba045fbf1dfd.png)
+
+sanitize address can be used with shop-specific json fiels. Shopify has the speciality to not validate user addresses in their basic plan. So arround 15% of the addresses we imported (3k) have "address2" field set as theire houseNo, as it is the default next field for the TAB key after street. 
+You can freely chain the methods to each other, as the following example states:
+
+--> sanitize address (addressSource="shopify" is set) --> the addres is piped through the **shopify sanitizer** --> then through the **generic sanitizer** --> then through the **provider-parser** 
+--> the sanitized address is returned
+
+
+
+
+### Authentication (http Basic auth)
+Well its pretty much to not have the service exposed directly, i would consider adding an accesstoken management lateron.
+
+- username (does not matter, as it is used to identify who is requesting data)
+- password needs to be defined in the .env file (ACCESS_TOKEN)
+
+
