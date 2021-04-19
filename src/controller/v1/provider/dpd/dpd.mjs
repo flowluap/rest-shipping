@@ -3,10 +3,12 @@ import sanitizer from "~util/v1/sanitizer.mjs";
 import { BadRequestError } from "../../../../util/restError.mjs";
 
 async function getLabel(req, res, next) {
+  try {
+    res.json(await dpdService.getLabel(req.body));
+  } catch (e) {
+    return next(new BadRequestError(e));
+  }
   // address is checked and works fine
-  res.json(await dpdService.getLabel(
-    req.body
-  ));
 }
 
 async function _sanitizeAddress(sender, recipient, addressSource) {

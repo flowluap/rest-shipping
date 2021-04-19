@@ -46,7 +46,7 @@ async function getLabel(shippingData) {
                     Name: `${shippingData.recipient.firstName} ${shippingData.recipient.lastName}`,
                     Street: shippingData.recipient.street,
                     HouseNo: shippingData.recipient.streetNo,
-                    ZipCode: shippingData.recipient.zipCode,
+                    ZipCode: shippingData.recipient.zip,
                     City: shippingData.recipient.city,
                     Country: shippingData.recipient.countryCode,
                     State: "",
