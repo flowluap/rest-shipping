@@ -19,7 +19,10 @@ If things, listed above, have been fixed, feel free to remove them in a pull req
 - [ ] logo to Label rendering
 - [ ] Webhooks on change
 - [ ] Tracking
-- [ ] Integrationtest for each provider (e.g. is service up like: https://status.jtl-shipping.de/)
+- [ ] Cache address Status
+- [ ] Google Places to correct addresses
+- [ ] Service integrationtest
+- [ ] Provider integration/availability - test for each provider (e.g. is service up like: https://status.jtl-shipping.de/)
 
 ## Providers:
 - [x] DPD (kinda working)
@@ -55,14 +58,15 @@ npm start
 ```
 ## Available Endpoints:
 
-- /v1/provider/dpd/checkAddress
---> takes the output of sanitizeAddress and checks if the provider will return data or errors
 
-- /v1/provider/dpd/sanitizeAddress
---> can sanitize the address according to the provider and addressSource
+- POST /v1/provider/dpd/sanitizeAddress
+--> can sanitize the address according to the provider/addressSource
 
-- /v1/provider/dpd/getLabel
---> requires a working addres set
+- POST /v1/provider/dpd/checkAddress
+--> can sanitize the address according to the provider/addressSourceand AND checks if the provider will return data or errors
+
+- POST /v1/provider/dpd/getLabel
+--> requires a working address set and returns a base64 encoded pdf
 
 See insomnia requests down below:
 
@@ -70,11 +74,17 @@ See insomnia requests down below:
 ![Screenshot from 2021-03-20 19-33-20](https://user-images.githubusercontent.com/49984289/111882367-729e6080-89b5-11eb-9a05-c11c6301ea5d.png)
 ![Screenshot from 2021-03-20 19-33-05](https://user-images.githubusercontent.com/49984289/111882368-729e6080-89b5-11eb-9194-ba045fbf1dfd.png)
 
-sanitize address can be used with shop-specific json fiels. Shopify has the speciality to not validate user addresses in their basic plan. So arround 15% of the addresses we imported (3k) have "address2" field set as theire houseNo, as it is the default next field for the TAB key after street. 
+# Why can you define an addressSource?
+
+`sanitizeAddress` or `checkAddress` can be used with shop-specific json fields in the `recipient` object. So that you can directly pass shopify REST data to the rest-shipping-service, without any translation
+
+Shopify has the speciality to not validate user addresses in their basic plan. So arround 15% of the addresses we imported (3k) have "address2" field set as theire houseNo, as it is the default next field for the TAB key after street. 
+So if you add the `addressSource : 'shopify'` to either `sanitizeAddress` or `checkAddress` it will translate the object, but also check `address2` for houseNo if it is not present in `address1`
+
 You can freely chain the methods to each other, as the following example states:
 
---> sanitize address (addressSource="shopify" is set) --> the addres is piped through the **shopify sanitizer** --> then through the **generic sanitizer** --> then through the **provider-parser** 
---> the sanitized address is returned
+--> sanitize address (addressSource : 'shopify' is set) --> the addres is piped through the **shopify sanitizer** --> then through the **generic sanitizer** --> then through the **provider-parser** 
+--> the sanitized address is returned (Object can be directly passed to `getLabel`)
 
 
 
