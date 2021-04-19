@@ -10,7 +10,7 @@ function extractHouseFromStreet(address1, address2 = null, useAddress2 = false) 
 }
 
 function checkJSON(address) {
-    let required = ["first_name", "last_name", "address1", "city", "zip", "country_code"]
+    let required = ["first_name", "last_name", "address1", "city", "zip", "country_code", "country"]
 
     for (let index of required) {
         if (!address[index] || address[index].length < 1) {
@@ -25,8 +25,9 @@ function sanitizeAddress(recipient) {
         firstName: recipient.first_name,
         lastName: recipient.last_name,
         company: recipient.company,
+        country: recipient.country,
         countryCode: recipient.country_code,
-        zipCode: recipient.zip,
+        zip: recipient.zip,
         city: recipient.city,
         phone: recipient.phone,
         notice: recipient.address2
@@ -43,6 +44,7 @@ function sanitizeAddress(recipient) {
                 throw new Error("Could not extract streetNo");
             }
         }
+        console.log(sanitizedAddress)
         return sanitizedAddress;
 
     } else {
