@@ -1,5 +1,6 @@
 import shopify from "./sources/shopify/shopifySanitization.mjs"
-const supportedSources = ["shopify"]
+import woocommerce from "./sources/woocommerce/woocommerceSanitization.mjs";
+const supportedSources = ["shopify", "woocommerce"]
 
 async function sanitizeSender (sender){
     return sender;
@@ -19,6 +20,10 @@ async function specific(recipient, source){
 
     if (source == "shopify"){
         sanitizedRecipient = await shopify.sanitizeAddress(recipient);
+    }
+
+    if (source == "woocommerce"){
+        sanitizedRecipient = await woocommerce.sanitizeAddress(recipient);
     }
     return sanitizedRecipient;
 }
