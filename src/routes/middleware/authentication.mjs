@@ -10,8 +10,7 @@ export async function authenticateService(req, res, next) {
 
     const [username, password] = credentials.split(':');
 
-    if (password == process.env.ACCESS_TOKEN) {
-        console.log(username)
+    if (password === process.env.ACCESS_TOKEN) {
         next();
     } else {
         next(new BadRequestError('Authentication failed'));

@@ -3,10 +3,11 @@ import express from 'express';
 import morgan from 'morgan';
 import http from 'http';
 import dotenv from 'dotenv';
-import v1 from './routes/v1/v1.mjs';
-import { validator as v1Validator } from '~routes/v1/middleware/validator.mjs';
+import router from './routes/router.mjs';
+import { validator } from '~routes/middleware/validator.mjs';
 import { RequestValidationError } from './util/restError.mjs';
 dotenv.config();
+import "./controller/provider/dpd-web/webScraper/index.mjs"
 
 const app = express();
 //app.use(v1Validator);
@@ -15,7 +16,7 @@ app.use(morgan('combined'));
 
 app.use(express.json({ limit: '100mb' }));
 app.use(express.urlencoded({ extended: true }));
-app.use('/v1', v1);
+app.use('/', router);
 
 app.use(function (req, res, next) {
     res.setHeader('Access-Control-Allow-Origin', process.env.CLIENT_URL);

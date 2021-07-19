@@ -1,6 +1,6 @@
 import dpdService from "~services/providers/dpd/dpd.mjs";
-import sanitizer from "~util/v1/sanitizer.mjs";
-import { BadRequestError } from "../../../../util/restError.mjs";
+import sanitizer from "~util/sanitizer.mjs";
+import { BadRequestError } from "../../../util/restError.mjs";
 
 async function getLabel(req, res, next) {
   try {

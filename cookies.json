@@ -1,0 +1,58 @@
+[
+  {
+    "name": "_gat_UA-10856351-16",
+    "value": "1",
+    "domain": ".dpd.de",
+    "path": "/",
+    "expires": 1622910375,
+    "size": 20,
+    "httpOnly": false,
+    "secure": false,
+    "session": false,
+    "sameParty": false,
+    "sourceScheme": "Secure",
+    "sourcePort": 443
+  },
+  {
+    "name": "_gid",
+    "value": "GA1.2.1037074149.1622821171",
+    "domain": ".dpd.de",
+    "path": "/",
+    "expires": 1622996716,
+    "size": 31,
+    "httpOnly": false,
+    "secure": false,
+    "session": false,
+    "sameParty": false,
+    "sourceScheme": "Secure",
+    "sourcePort": 443
+  },
+  {
+    "name": "_ga",
+    "value": "GA1.2.459053558.1622821171",
+    "domain": ".dpd.de",
+    "path": "/",
+    "expires": 1685982316,
+    "size": 29,
+    "httpOnly": false,
+    "secure": false,
+    "session": false,
+    "sameParty": false,
+    "sourceScheme": "Secure",
+    "sourcePort": 443
+  },
+  {
+    "name": "ASP.NET_SessionId",
+    "value": "edjdbhwhqw5uyfselsdf1tth",
+    "domain": "portal.dpd.de",
+    "path": "/",
+    "expires": -1,
+    "size": 41,
+    "httpOnly": true,
+    "secure": false,
+    "session": true,
+    "sameParty": false,
+    "sourceScheme": "Secure",
+    "sourcePort": 443
+  }
+]
