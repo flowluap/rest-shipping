@@ -41,7 +41,8 @@
     "express": "^4.17.1",
     "express-openapi-validator": "^4.12.5",
     "link-module-alias": "1.2.0",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "puppeteer": "^10.0.0"
   },
   "devDependencies": {
     "eslint": "^7.19.0",

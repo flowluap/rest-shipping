@@ -1,0 +1,26 @@
+version: '3.3'
+services:
+  nodejs:
+    build: ./src
+    ports:
+     - "6000:6000"
+    environment:
+    - NODE_ENV=development
+    - JWT_SECRET=ur8934qhfuerq/&&R%/&ghi
+    - DB_HOST=db
+    - DB_USER=test
+    - DB_PASS=ppshein123456
+    - DB_PORT=3306
+    volumes:
+     - ./nodejs:/usr/src/app/
+    #restart: on-failure
+    command: nodemon app.js
+    links:
+        - redis:redis
+        - db:db
+  redis:
+    image: redis:alpine
+    expose:
+     - 6379
+    ports:
+     - 6379
