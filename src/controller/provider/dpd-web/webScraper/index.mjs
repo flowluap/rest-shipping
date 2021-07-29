@@ -1,11 +1,17 @@
 import puppeteer from "puppeteer";
 import fs from "fs/promises";
-import { ShippingProvider } from "../../../../util/provider/ShippingProvider.mjs";
 
+//ToDO
+// getInvoices
+// getIncomingWares
+// trackParcel
+// registerBrokenPackage
+// Unreciviable Packages
 
 class DpdWebPage {
-  constructor(page) {
+  constructor(page, browser) {
     this.page = page;
+    this.browser = browser;
     this.cookies = {};
     this.initialize();
   }
@@ -35,9 +41,9 @@ class DpdWebPage {
   async login() {
     await this.page.goto("https://business.dpd.de/");
     await this.page.click("#txtMasterLogin");
-    await this.page.keyboard.type("");
+    await this.page.keyboard.type(process.env.DPD_WEB_PASSWORD);
     await this.page.click("#txtMasterPasswort");
-    await this.page.keyboard.type("");
+    await this.page.keyboard.type(process.env.DPD_WEB_USERNAME);
 
     await this.page.click("#CPLContentSmall_btnMasterLogin");
     await this.page.waitForNavigation();
@@ -77,30 +83,66 @@ class DpdWebPage {
     }
 
   }
+
+  async invoices() {
+    await this.page.waitForSelector("#modHeader_imgBurger", { visible: true });
+    await this.page.click("#modHeader_imgBurger");
+
+    await this.page.waitForSelector("#modHeader_repMobileBurgerNav_repBurgerNavLevel2_3_hplBurgerNav2Sub_5", { visible: true });
+    await this.page.click("#modHeader_repMobileBurgerNav_repBurgerNavLevel2_3_hplBurgerNav2Sub_5");
+
+    await this.page.waitForSelector("#CPLContentLarge_btnInvoiceArchiv", { visible: true });
+    await this.page.click("#CPLContentLarge_btnInvoiceArchiv");
+
+    await this.page.waitForSelector("#CPLContentLarge_panRepTable", { visible: true });
+    const data = await this.page.evaluate(() => Array.from(
+      document.querySelectorAll("td"),
+      td => {
+        if (!td.innerText) {
+          return td.querySelector("a[href]").href;
+        }
+      }
+    ));
+
+    const pageTarget = this.page.target();
+
+    console.log("Downloading latest invoices");
+    for (let col of data) {
+      if (col) {
+        //console.log(col);
+        await this.page.evaluate(col.replace("javascript:", ""));
+        await _savePdfToFile(this.browser);
+      }
+    }
+    await this.browser.close();
+  }
 }
 
-const puppeteerExample = async () => {
-  // Launch puppeteer
-  const browser = await puppeteer.launch({
-    headless: true
-  });
-  let dpdPage = new DpdWebPage(await getCurrentPage(browser));
-  //await dpdPage.getLabel();
-  await dpdPage.incomingParcels();
+async function _savePdfToFile(browser) {
+  try {
+    let page = await browser.newPage();
+    await page._client.send("Page.setDownloadBehavior", { behavior: "allow", downloadPath: process.env.TMP_DIR });
+    await page.goto("https://business.dpd.de/showpdf.aspx");
+    await page.waitForTimeout(1000);
+    await page.close();
+    await page.waitForTimeout(1000);
+  } catch (e) {
+    //console.log("Save pdf did not work ", e);
+  }
+}
 
-  //ToDO
-  // getInvoices
-  // getIncomingWares
-  // trackParcel
-  // registerBrokenPackage
-  // Unreciviable Packages
-
-};
 
 const getCurrentPage = async (browser) => {
   return (await browser.pages())[0];
 };
-//puppeteerExample();
+
+const browser = await puppeteer.launch({
+  headless: true,
+  devtools: true
+
+});
+export default new DpdWebPage(await getCurrentPage(browser), browser);
+
 
 
 
