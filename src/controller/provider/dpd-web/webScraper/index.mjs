@@ -41,9 +41,9 @@ class DpdWebPage {
   async login() {
     await this.page.goto("https://business.dpd.de/");
     await this.page.click("#txtMasterLogin");
-    await this.page.keyboard.type(process.env.DPD_WEB_PASSWORD);
-    await this.page.click("#txtMasterPasswort");
     await this.page.keyboard.type(process.env.DPD_WEB_USERNAME);
+    await this.page.click("#txtMasterPasswort");
+    await this.page.keyboard.type(process.env.DPD_WEB_PASSWORD);
 
     await this.page.click("#CPLContentSmall_btnMasterLogin");
     await this.page.waitForNavigation();
@@ -104,8 +104,6 @@ class DpdWebPage {
       }
     ));
 
-    const pageTarget = this.page.target();
-
     console.log("Downloading latest invoices");
     for (let col of data) {
       if (col) {
@@ -137,7 +135,7 @@ const getCurrentPage = async (browser) => {
 };
 
 const browser = await puppeteer.launch({
-  headless: true,
+  headless: false,
   devtools: true
 
 });
