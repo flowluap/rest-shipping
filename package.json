@@ -45,7 +45,8 @@
     "puppeteer": "^10.0.0",
     "puppeteer-extra": "^3.1.18",
     "puppeteer-extra-plugin-user-data-dir": "^2.2.12",
-    "puppeteer-extra-plugin-user-preferences": "^2.2.12"
+    "puppeteer-extra-plugin-user-preferences": "^2.2.12",
+    "soap": "^0.40.0"
   },
   "devDependencies": {
     "eslint": "^7.19.0",

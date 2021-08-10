@@ -18,11 +18,11 @@ async function specific(recipient, source){
         throw new Error("Not supported address Source")
     }
 
-    if (source == "shopify"){
+    if (source === "shopify"){
         sanitizedRecipient = await shopify.sanitizeAddress(recipient);
     }
 
-    if (source == "woocommerce"){
+    if (source === "woocommerce"){
         sanitizedRecipient = await woocommerce.sanitizeAddress(recipient);
     }
     return sanitizedRecipient;
