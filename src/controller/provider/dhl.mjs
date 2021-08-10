@@ -1,7 +1,8 @@
-import dpdService from "~services/providers/dpd/dpd.mjs";
+import dhlService from "~services/providers/dhl/dhl.mjs";
 import sanitizer from "~util/sanitizer.mjs";
 import { BadRequestError } from "../../util/restError.mjs";
 
+/*
 async function getLabel(req, res, next) {
   try {
     res.json(await dpdService.getLabel(req.body));
@@ -9,20 +10,6 @@ async function getLabel(req, res, next) {
     return next(new BadRequestError(e));
   }
   // address is checked and works fine
-}
-
-async function _sanitizeAddress(sender, recipient, addressSource) {
-  //only return the sanitized address
-  let sanitizedRecipient;
-  let sanitizedSender = await sanitizer.sanitizeSender(sender);
-
-  if (addressSource) {
-    sanitizedRecipient = await sanitizer.specific(recipient, addressSource);
-  } else {
-    sanitizedRecipient = await sanitizer.generic(recipient);
-  }
-
-  return { sender: sanitizedSender, recipient: sanitizedRecipient };
 }
 
 async function sanitizeAddress(req, res, next) {
@@ -41,6 +28,7 @@ async function sanitizeAddress(req, res, next) {
 
   res.json(response);
 }
+*/
 
 async function checkAddress(req, res, next) {
   let response;
@@ -48,8 +36,8 @@ async function checkAddress(req, res, next) {
   let recipient = req.body.recipient;
   let addressSource = req.body.addressSource;
   try {
-    response = await _sanitizeAddress(sender, recipient, addressSource);
-    await dpdService.getLabel(response);
+    response = await sanitizer._sanitizeAddress(sender, recipient, addressSource);
+    await dhlService.checkAddress(response);
     res.json(response);
   } catch (e) {
     return next(new BadRequestError(e));
@@ -57,4 +45,4 @@ async function checkAddress(req, res, next) {
 }
 
 
-export default { getLabel, sanitizeAddress, checkAddress };
+export default { checkAddress };

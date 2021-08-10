@@ -2,6 +2,20 @@ import shopify from "./sources/shopify/shopifySanitization.mjs"
 import woocommerce from "./sources/woocommerce/woocommerceSanitization.mjs";
 const supportedSources = ["shopify", "woocommerce"]
 
+async function _sanitizeAddress(sender, recipient, addressSource) {
+    //only return the sanitized address
+    let sanitizedRecipient;
+    let sanitizedSender = await sanitizer.sanitizeSender(sender);
+
+    if (addressSource) {
+        sanitizedRecipient = await sanitizer.specific(recipient, addressSource);
+    } else {
+        sanitizedRecipient = await sanitizer.generic(recipient);
+    }
+
+    return { sender: sanitizedSender, recipient: sanitizedRecipient };
+}
+
 async function sanitizeSender (sender){
     return sender;
 }
@@ -12,7 +26,6 @@ async function generic(recipient) {
 
 async function specific(recipient, source){
     let sanitizedRecipient;
-    console.log(source)
 
     if (!supportedSources.includes(source)) {
         throw new Error("Not supported address Source")
@@ -29,4 +42,4 @@ async function specific(recipient, source){
 }
 
 
-export default { generic, specific, sanitizeSender}
+export default { generic, specific, sanitizeSender, _sanitizeAddress}

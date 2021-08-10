@@ -1,5 +1,5 @@
 import express from 'express';
-import dpdController from "~controller/provider/dpd/dpd.mjs";
+import dpdController from "~controller/provider/dpd.mjs";
 const router = express.Router();
 
 router.post('/getLabel', dpdController.getLabel);
