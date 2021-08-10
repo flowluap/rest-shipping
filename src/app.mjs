@@ -52,6 +52,6 @@ app.use((err, req, res, next) => {
     });
 });
 
-http.createServer(app).listen(6000, '0.0.0.0', () => {
-    console.log('Running on port', 6000);
+http.createServer(app).listen(3000, '0.0.0.0', () => {
+    console.log('Running on port', 3000);
 });
