@@ -1,9 +1,7 @@
 import express from 'express';
-import dpdController from "~controller/provider/dpd.mjs";
+import dhlController from "~controller/provider/dhl.mjs";
 const router = express.Router();
 
-router.post('/getLabel', dpdController.getLabel);
-router.post('/sanitizeAddress', dpdController.sanitizeAddress);
-router.post('/checkAddress', dpdController.checkAddress);
+router.post('/checkAddress', dhlController.checkAddress);
 
 export default router;
