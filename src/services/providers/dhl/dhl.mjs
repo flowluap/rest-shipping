@@ -35,7 +35,7 @@ const buildBody = (data) => {
           shipmentDate: util.generateShipmentDate(),
           costCentre: "",
           ShipmentItem: {
-            weightInKG: "5",
+            weightInKG: "3",
             lengthInCM: "60",
             widthInCM: "60",
             heightInCM: "60"
@@ -47,9 +47,9 @@ const buildBody = (data) => {
         },
         Shipper: {
           Name: {
-            name1: "Absender Zeile 1",
-            name2: "Absender Zeile 2",
-            name3: "Absender Zeile 3"
+            name1: `${data.sender.firstName} ${data.sender.lastName}`
+            name2: `${data.sender.street} ${data.sender.streetNo}`,
+            name3: `${data.sender.city} ${data.sender.zipCode}`,
           },
           Address: {
             streetName: data.sender.street,
@@ -68,10 +68,10 @@ const buildBody = (data) => {
           }
         },
         Receiver: {
-          name1: "Empfänger Zeile 1",
+          name1: `${data.recipient.firstName} ${data.recipient.lastName}`
           Address: {
-            name2: "Empfänger Zeile 2",
-            name3: "Empfänger Zeile 3",
+            name2: `${data.recipient.street} ${data.recipient.streetNo}`,
+            name3: `${data.recipient.city} ${data.recipient.zipCode}`,
             streetName: data.recipient.street,
             streetNumber: data.recipient.streetNo,
             zip: data.recipient.zipCode,
