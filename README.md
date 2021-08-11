@@ -2,6 +2,22 @@
 
 The goal of this repository is to provide a service to those, who are also impressed by the inability of large shipping services to provide us, developers, with rest-based, well documented, and maintained API endpoints to fetch their service in an automated way.
 
+## Installation
+
+```
+git clone https://github.com/flowluap/rest-shipping
+cd rest-shipping
+npm i
+cp .env.example .env
+```
+Now edit .env to fit your needs
+```
+npm start
+```
+
+## Getting started! 
+- [DHL Keys](docs%20dhl%20GETKEYS.md)
+
 Special shoutout to:
 
 - **DPD** - who were unable to provide us with the necessary information for over 3 weeks, while we were already in production
@@ -43,19 +59,7 @@ If things, listed above, have been fixed, feel free to remove them in a pull req
 
 ## ProviderSpecific ToDo's:
 
-## Installation
 
-```
-git clone https://github.com/flowluap/rest-shipping
-cd rest-shipping
-npm i
-cp .env.example .env
-```
-Now edit .env to fit your needs (Tokens)
-
-```
-npm start
-```
 ## Available Endpoints:
 
 
