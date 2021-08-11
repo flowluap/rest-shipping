@@ -1,5 +1,6 @@
 import soap from "soap";
 import dotenv from "dotenv";
+import util from "../../../util/util.mjs";
 
 dotenv.config();
 
@@ -30,8 +31,8 @@ const buildBody = (data) => {
         ShipmentDetails: {
           product: "V01PAK",
           accountNumber: process.env.DHL_ACCOUNT_NUMBER,
-          customerReference: "Ref. 123456",
-          shipmentDate: "2021-12-29",
+          //customerReference: "Ref. 123456",
+          shipmentDate: util.generateShipmentDate(),
           costCentre: "",
           ShipmentItem: {
             weightInKG: "5",
@@ -41,7 +42,7 @@ const buildBody = (data) => {
           },
           Service: "",
           Notification: {
-            recipientEmailAddress: "test@test.de"
+            recipientEmailAddress: data.recipient.email || process.env.ALT_TRACKING_MAIL
           }
         },
         Shipper: {
@@ -51,19 +52,19 @@ const buildBody = (data) => {
             name3: "Absender Zeile 3"
           },
           Address: {
-            streetName: "Teststraße",
-            streetNumber: "111",
-            zip: "54290",
-            city: "Trier",
+            streetName: data.sender.street,
+            streetNumber: data.sender.streetNo,
+            zip: data.sender.zipCode,
+            city: data.sender.city,
             Origin: {
-              country: "Deutschland",
-              countryISOCode: "DE"
+              country: "",
+              countryISOCode: data.sender.country
             }
           },
           Communication: {
-            phone: "1234567",
-            email: "absender@test.de",
-            contactPerson: "Kontakt Absender"
+            phone: data.sender.phone,
+            email: data.sender.email,
+            contactPerson: `${data.sender.firstName} ${data.sender.lastName}`
           }
         },
         Receiver: {
@@ -71,25 +72,25 @@ const buildBody = (data) => {
           Address: {
             name2: "Empfänger Zeile 2",
             name3: "Empfänger Zeile 3",
-            streetName: "An der Weide",
-            streetNumber: "50a",
-            zip: "54290",
-            city: "Trier",
+            streetName: data.recipient.street,
+            streetNumber: data.recipient.streetNo,
+            zip: data.recipient.zipCode,
+            city: data.recipient.city,
             Origin: {
-              country: "Deutschland",
-              countryISOCode: "DE"
+              country: "",
+              countryISOCode: data.recipient.countryCode
             }
           },
           Communication: {
-            phone: "1234567",
-            email: "empfänger@test.de",
-            contactPerson: "Empfänger Absender"
+            phone: data.recipient.phone,
+            email: data.recipient.email || process.env.ALT_TRACKING_MAIL,
+            contactPerson: `${data.recipient.firstName} ${data.recipient.lastName}`
           }
         }
       }
       //"PrintOnlyIfCodeable active=1": ""
     },
-    labelResponseType: "URL",
+    labelResponseType: "B64",
     groupProfileName: "",
     labelFormat: "",
     labelFormatRetoure: "",
@@ -100,25 +101,55 @@ const buildBody = (data) => {
 async function checkAddressInternational() {
 }
 
-async function checkAddress() {
-  soap.createClient(
-    //
-    "https://cig.dhl.de/cig-wsdls/com/dpdhl/wsdl/geschaeftskundenversand-api/3.1/geschaeftskundenversand-api-3.1.wsdl",
-    { endpoint },
-    function(err, client) {
-      client.setSecurity(new soap.BasicAuthSecurity(httpAuthUser, httpAuthPassword));
-      client.addSoapHeader(buildHeader("validateShipment"));
-      console.log("httpUser: " + httpAuthUser);
-      console.log("httpPassword:" + httpAuthPassword);
-      console.log(buildHeader("createShipmentOrder"));
-      client.validateShipment(buildBody(""), function(err, result, rawResponse, soapHeader, rawRequest) {
-        //console.log(rawRequest);
+async function checkAddress(data, callback) {
+  try {
+    soap.createClient(
+      "https://cig.dhl.de/cig-wsdls/com/dpdhl/wsdl/geschaeftskundenversand-api/3.1/geschaeftskundenversand-api-3.1.wsdl",
+      { endpoint },
+      async function(err, client) {
         if (err) throw err;
-          console.log(JSON.stringify(result));
-      });
-    }
-  );
+        client.setSecurity(new soap.BasicAuthSecurity(httpAuthUser, httpAuthPassword));
+        client.addSoapHeader(buildHeader("validateShipment"));
+        console.log("httpUser: " + httpAuthUser);
+        console.log("httpPassword:" + httpAuthPassword);
+        console.log(buildHeader("validateShipment"));
+        await client.validateShipment(buildBody(data), function(err, result, rawResponse, soapHeader, rawRequest) {
+          if (err) return callback(err);
+          if (result.Status.statusCode !== 0) return callback(JSON.stringify(result));
+          callback(null);
+        });
+      }
+    );
+  } catch (e) {
+    callback(e);
+  }
+}
+async function getLabel(data, callback) {
+  try {
+    soap.createClient(
+      "https://cig.dhl.de/cig-wsdls/com/dpdhl/wsdl/geschaeftskundenversand-api/3.1/geschaeftskundenversand-api-3.1.wsdl",
+      { endpoint },
+      async function(err, client) {
+        if (err) throw err;
+        client.setSecurity(new soap.BasicAuthSecurity(httpAuthUser, httpAuthPassword));
+        client.addSoapHeader(buildHeader("createShipmentOrder"));
+        console.log("httpUser: " + httpAuthUser);
+        console.log("httpPassword:" + httpAuthPassword);
+        console.log(buildHeader("createShipmentOrder"));
+        await client.createShipmentOrder(buildBody(data), function(err, result, rawResponse, soapHeader, rawRequest) {
+          if (err) return callback(err);
+          if (result.Status.statusCode !== 0) return callback(JSON.stringify(result));
+          console.log(result)
+          callback(null, {
+            trackingNumber:result.CreationState[0].shipmentNumber,
+            labelContent:result.CreationState[0].LabelData.labelData
+          });
+        });
+      }
+    );
+  } catch (e) {
+    callback(e);
+  }
 }
 
-checkAddress()
-export default {checkAddress}
+export default { checkAddress, getLabel };

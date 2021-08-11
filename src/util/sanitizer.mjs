@@ -5,12 +5,12 @@ const supportedSources = ["shopify", "woocommerce"]
 async function _sanitizeAddress(sender, recipient, addressSource) {
     //only return the sanitized address
     let sanitizedRecipient;
-    let sanitizedSender = await sanitizer.sanitizeSender(sender);
+    let sanitizedSender = await sanitizeSender(sender);
 
     if (addressSource) {
-        sanitizedRecipient = await sanitizer.specific(recipient, addressSource);
+        sanitizedRecipient = await specific(recipient, addressSource);
     } else {
-        sanitizedRecipient = await sanitizer.generic(recipient);
+        sanitizedRecipient = await generic(recipient);
     }
 
     return { sender: sanitizedSender, recipient: sanitizedRecipient };
