@@ -47,7 +47,7 @@ const buildBody = (data) => {
         },
         Shipper: {
           Name: {
-            name1: `${data.sender.firstName} ${data.sender.lastName}`
+            name1: `${data.sender.firstName} ${data.sender.lastName}`,
             name2: `${data.sender.street} ${data.sender.streetNo}`,
             name3: `${data.sender.city} ${data.sender.zipCode}`,
           },
