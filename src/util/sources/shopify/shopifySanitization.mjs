@@ -30,11 +30,11 @@ function sanitizeAddress(recipient) {
         zip: recipient.zip,
         city: recipient.city,
         phone: recipient.phone,
+        email: recipient.email,
         notice: recipient.address2
     };
 
     if (checkJSON(recipient)) {
-
         try {
             sanitizedAddress = { ...sanitizedAddress, ...extractHouseFromStreet(recipient.address1) };
         } catch (e) {
@@ -46,7 +46,6 @@ function sanitizeAddress(recipient) {
         }
         console.log(sanitizedAddress)
         return sanitizedAddress;
-
     } else {
         throw new Error("Missing params in Shopify JSON");
     }

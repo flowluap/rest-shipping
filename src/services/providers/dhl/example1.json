@@ -1,0 +1,71 @@
+{
+  "Version": {
+    "majorRelease": "3",
+    "minorRelease": "1"
+  },
+  "ShipmentOrder": {
+    "SequenceNumber": "",
+    "Shipment": {
+      "ShipmentDetails": {
+        "product": "V01PAK",
+        "accountNumber": "63387188640101",
+        "shipmentDate": "2021-08-11",
+        "costCentre": "",
+        "ShipmentItem": {
+          "weightInKG": "5",
+          "lengthInCM": "60",
+          "widthInCM": "60",
+          "heightInCM": "60"
+        },
+        "Service": "",
+        "Notification": {
+          "recipientEmailAddress": "info@flowluap.com"
+        }
+      },
+      "Shipper": {
+        "Name": {
+          "name1": "Absender Zeile 1",
+          "name2": "Absender Zeile 2",
+          "name3": "Absender Zeile 3"
+        },
+        "Address": {
+          "streetName": "Sender Str.",
+          "streetNumber": "99",
+          "city": "Hamburg",
+          "Origin": {
+            "country": "",
+            "countryISOCode": "DE"
+          }
+        },
+        "Communication": {
+          "phone": "065160340393",
+          "email": "kontakt@droplion.de",
+          "contactPerson": "Serge Sender"
+        }
+      },
+      "Receiver": {
+        "name1": "Empfänger Zeile 1",
+        "Address": {
+          "name2": "Empfänger Zeile 2",
+          "name3": "Empfänger Zeile 3",
+          "streetName": "ChestnutStreet",
+          "streetNumber": "23",
+          "city": "Louisville",
+          "Origin": {
+            "country": ""
+          }
+        },
+        "Communication": {
+          "phone": "555-625-1199",
+          "email": "info@flowluap.com",
+          "contactPerson": "Bob Norman"
+        }
+      }
+    }
+  },
+  "labelResponseType": "URL",
+  "groupProfileName": "",
+  "labelFormat": "",
+  "labelFormatRetoure": "",
+  "combinedPrinting": 0
+}

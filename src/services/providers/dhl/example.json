@@ -1,0 +1,75 @@
+{
+  "Version": {
+    "majorRelease": "3",
+    "minorRelease": "1"
+  },
+  "ShipmentOrder": {
+    "SequenceNumber": "",
+    "Shipment": {
+      "ShipmentDetails": {
+        "product": "V01PAK",
+        "accountNumber": "63387188640101",
+        "customerReference": "Ref. 123456",
+        "shipmentDate": "2021-12-29",
+        "costCentre": "",
+        "ShipmentItem": {
+          "weightInKG": "5",
+          "lengthInCM": "60",
+          "widthInCM": "60",
+          "heightInCM": "60"
+        },
+        "Service": "",
+        "Notification": {
+          "recipientEmailAddress": "test@test.de"
+        }
+      },
+      "Shipper": {
+        "Name": {
+          "name1": "Absender Zeile 1",
+          "name2": "Absender Zeile 2",
+          "name3": "Absender Zeile 3"
+        },
+        "Address": {
+          "streetName": "Teststraße",
+          "streetNumber": "111",
+          "zip": "54290",
+          "city": "Trier",
+          "Origin": {
+            "country": "Deutschland",
+            "countryISOCode": "DE"
+          }
+        },
+        "Communication": {
+          "phone": "1234567",
+          "email": "absender@test.de",
+          "contactPerson": "Kontakt Absender"
+        }
+      },
+      "Receiver": {
+        "name1": "Empfänger Zeile 1",
+        "Address": {
+          "name2": "Empfänger Zeile 2",
+          "name3": "Empfänger Zeile 3",
+          "streetName": "An der Weide",
+          "streetNumber": "50a",
+          "zip": "54290",
+          "city": "Trier",
+          "Origin": {
+            "country": "Deutschland",
+            "countryISOCode": "DE"
+          }
+        },
+        "Communication": {
+          "phone": "1234567",
+          "email": "empfänger@test.de",
+          "contactPerson": "Empfänger Absender"
+        }
+      }
+    }
+  },
+  "labelResponseType": "URL",
+  "groupProfileName": "",
+  "labelFormat": "",
+  "labelFormatRetoure": "",
+  "combinedPrinting": 0
+}

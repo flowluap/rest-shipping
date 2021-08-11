@@ -14,24 +14,11 @@ async function getLabel(shippingData) {
         }
     };
 
-    const currentDate = new Date();
-
-    if (currentDate.getDay() == 6) {
-        currentDate.setDate(currentDate.getDate() + 2)
-    }
-
-    if (currentDate.getDay() == 0) {
-        currentDate.setDate(currentDate.getDate() + 1)
-    }
-    const year = currentDate.getFullYear();
-    const month = util.leftPadZero(currentDate.getMonth() + 1, 2);
-    const day = util.leftPadZero(currentDate.getDate(), 2);
-    const dateString = year + "-" + month + "-" + day;
 
     const json = {
         OrderAction: "startOrder",
         OrderSettings: {
-            ShipDate: dateString,
+            ShipDate: util.generateShipmentDate(),
             LabelSize: "PDF_A4",
             LabelStartPosition: "UpperLeft"
         },
