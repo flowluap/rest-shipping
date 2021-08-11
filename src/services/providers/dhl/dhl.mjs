@@ -68,7 +68,7 @@ const buildBody = (data) => {
           }
         },
         Receiver: {
-          name1: `${data.recipient.firstName} ${data.recipient.lastName}`
+          name1: `${data.recipient.firstName} ${data.recipient.lastName}`,
           Address: {
             name2: `${data.recipient.street} ${data.recipient.streetNo}`,
             name3: `${data.recipient.city} ${data.recipient.zipCode}`,
