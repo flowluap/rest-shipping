@@ -49,12 +49,12 @@ const buildBody = (data) => {
           Name: {
             name1: `${data.sender.firstName} ${data.sender.lastName}`,
             name2: `${data.sender.street} ${data.sender.streetNo}`,
-            name3: `${data.sender.city} ${data.sender.zipCode}`,
+            name3: `${data.sender.city} ${data.sender.zip}`,
           },
           Address: {
             streetName: data.sender.street,
             streetNumber: data.sender.streetNo,
-            zip: data.sender.zipCode,
+            zip: data.sender.zip,
             city: data.sender.city,
             Origin: {
               country: "",
@@ -71,10 +71,10 @@ const buildBody = (data) => {
           name1: `${data.recipient.firstName} ${data.recipient.lastName}`,
           Address: {
             name2: `${data.recipient.street} ${data.recipient.streetNo}`,
-            name3: `${data.recipient.city} ${data.recipient.zipCode}`,
+            name3: `${data.recipient.city} ${data.recipient.zip}`,
             streetName: data.recipient.street,
             streetNumber: data.recipient.streetNo,
-            zip: data.recipient.zipCode,
+            zip: data.recipient.zip,
             city: data.recipient.city,
             Origin: {
               country: "",

@@ -27,7 +27,7 @@ function sanitizeAddress(recipient) {
         company: recipient.company,
         country: recipient.country,
         countryCode: recipient.country_code,
-        zipCode: recipient.zip,
+        zip: recipient.zip,
         city: recipient.city,
         phone: recipient.phone,
         email: recipient.email,
