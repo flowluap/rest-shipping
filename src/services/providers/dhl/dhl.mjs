@@ -92,8 +92,8 @@ const buildBody = (data) => {
     },
     labelResponseType: "B64",
     groupProfileName: "",
-    labelFormat: "",
-    labelFormatRetoure: "",
+    labelFormat: "910-300-700",
+    labelFormatRetoure: "910-300-700",
     combinedPrinting: 0
   };
 };
