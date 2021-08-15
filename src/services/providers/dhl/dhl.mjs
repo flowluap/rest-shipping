@@ -13,8 +13,8 @@ let endpoint = dev ? "https://cig.dhl.de/services/sandbox/soap" : "https://cig.d
 const buildHeader = (action) => {
   return {
     "cis:Authentification": {
-      "cis:user": process.env.DHL_USER,
-      "cis:signature": process.env.DHL_PASS
+      "cis:user": dev ? process.env.DHL_HTTP_AUTH_USER_DEV : process.env.DHL_USER,
+      "cis:signature": dev ? process.env.DHL_PASS_DEV : process.env.DHL_PASS
     },
     "cis:SOAPAction": `urn:${action}`
   };
@@ -30,7 +30,7 @@ const buildBody = (data) => {
       Shipment: {
         ShipmentDetails: {
           product: "V01PAK",
-          accountNumber: process.env.DHL_ACCOUNT_NUMBER,
+          accountNumber: dev ? process.env.DHL_ACCOUNT_NUMBER_DEV :process.env.DHL_ACCOUNT_NUMBER,
           //customerReference: "Ref. 123456",
           shipmentDate: util.generateShipmentDate(),
           costCentre: "",
