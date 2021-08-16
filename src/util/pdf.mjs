@@ -19,8 +19,8 @@ export async function rotatePdf(base64) {
 
 export async function resizePdf(base64){
   // ToDo rewrite this to work with buffers
-  let inputFile = `tmp/${uuidv4()}.pdf`;
-  let outputFile= `tmp/${uuidv4()}.pdf`;
+  let inputFile = `./tmp/${uuidv4()}.pdf`;
+  let outputFile= `./tmp/${uuidv4()}.pdf`;
   await fs.writeFileSync(inputFile, base64,"base64")
 
   const pdfDoc = new HummusRecipe('new', outputFile, {
