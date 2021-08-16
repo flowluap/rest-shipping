@@ -4,5 +4,6 @@ const router = express.Router();
 
 router.post('/checkAddress', dhlController.checkAddress);
 router.post('/getLabel', dhlController.getLabel);
+router.post('/getOldLabel/:tracking', dhlController.getOldLabel);
 
 export default router;

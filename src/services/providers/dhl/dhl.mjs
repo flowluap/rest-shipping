@@ -9,7 +9,15 @@ let dev = parseInt(process.env.DHL_DEV);
 let httpAuthUser = dev ? process.env.DHL_HTTP_AUTH_USER_DEV : process.env.DHL_HTTP_AUTH_USER;
 let httpAuthPassword = dev ? process.env.DHL_HTTP_AUTH_PASS_DEV : process.env.DHL_HTTP_AUTH_PASS;
 let endpoint = dev ? "https://cig.dhl.de/services/sandbox/soap" : "https://cig.dhl.de/services/production/soap";
-
+/*
+A4: common label laser printing A4 plain paper;
+910-300-700: common label laser printing 105 x 205 mm (910-300-700);
+910-300-700-oz: common label laser printing 105 x 205 mm (910-300-700) without additional label;
+910-300-600: common label thermal printing 103 x 199 (910-300-600, 910-300-610);
+910-300-710: common label laser printing 105 x 208 mm (910-300-710); 100x70mm:
+100x70mm (only for Warenpost);
+*/
+let labelSize = "910-300-700-oz";
 const buildHeader = (action) => {
   return {
     "cis:Authentification": {
@@ -92,12 +100,26 @@ const buildBody = (data) => {
     },
     labelResponseType: "B64",
     groupProfileName: "",
-    labelFormat: "910-300-700",
-    labelFormatRetoure: "910-300-700",
+    labelFormat: labelSize,
+    labelFormatRetoure: labelSize,
     combinedPrinting: 0
   };
 };
 
+const buildGetLabelBody = (number) => {
+  return {
+    Version: {
+      majorRelease: "3",
+      minorRelease: "1"
+    },
+    shipmentNumber:number,
+    labelResponseType: "B64",
+    groupProfileName: "",
+    labelFormat: labelSize,
+    labelFormatRetoure: labelSize,
+    combinedPrinting: 0
+  };
+};
 async function checkAddressInternational() {
 }
 
@@ -110,9 +132,9 @@ async function checkAddress(data, callback) {
         if (err) throw err;
         client.setSecurity(new soap.BasicAuthSecurity(httpAuthUser, httpAuthPassword));
         client.addSoapHeader(buildHeader("validateShipment"));
-        console.log("httpUser: " + httpAuthUser);
-        console.log("httpPassword:" + httpAuthPassword);
-        console.log(buildHeader("validateShipment"));
+        //console.log("httpUser: " + httpAuthUser);
+        //console.log("httpPassword:" + httpAuthPassword);
+        //console.log(buildHeader("validateShipment"));
         await client.validateShipment(buildBody(data), function(err, result, rawResponse, soapHeader, rawRequest) {
           if (err) return callback(err);
           if (result.Status.statusCode !== 0) return callback(JSON.stringify(result));
@@ -132,14 +154,13 @@ async function getLabel(data, callback) {
       async function(err, client) {
         if (err) throw err;
         client.setSecurity(new soap.BasicAuthSecurity(httpAuthUser, httpAuthPassword));
-        client.addSoapHeader(buildHeader("createShipmentOrder"));
-        console.log("httpUser: " + httpAuthUser);
-        console.log("httpPassword:" + httpAuthPassword);
-        console.log(buildHeader("createShipmentOrder"));
+        client.addSoapHeader(buildHeader("getLabel"));
+        //console.log("httpUser: " + httpAuthUser);
+        //console.log("httpPassword:" + httpAuthPassword);
+        //console.log(buildHeader("createShipmentOrder"));
         await client.createShipmentOrder(buildBody(data), function(err, result, rawResponse, soapHeader, rawRequest) {
           if (err) return callback(err);
           if (result.Status.statusCode !== 0) return callback(JSON.stringify(result));
-          console.log(result)
           callback(null, {
             trackingNumber:result.CreationState[0].shipmentNumber,
             labelContent:result.CreationState[0].LabelData.labelData
@@ -152,4 +173,30 @@ async function getLabel(data, callback) {
   }
 }
 
-export default { checkAddress, getLabel };
+async function getOldLabel(tracking, callback){
+
+  try {
+    soap.createClient(
+      "https://cig.dhl.de/cig-wsdls/com/dpdhl/wsdl/geschaeftskundenversand-api/3.1/geschaeftskundenversand-api-3.1.wsdl",
+      { endpoint },
+      async function(err, client) {
+        if (err) throw err;
+        client.setSecurity(new soap.BasicAuthSecurity(httpAuthUser, httpAuthPassword));
+        client.addSoapHeader(buildHeader("createShipmentOrder"));
+        await client.getLabel(buildGetLabelBody(tracking), function(err, result, rawResponse, soapHeader, rawRequest) {
+          console.log(err)
+          if (err) return callback(err);
+          if (result.Status.statusCode !== 0) return callback(JSON.stringify(result));
+          callback(null, {
+            trackingNumber:result.CreationState[0].shipmentNumber,
+            labelContent:result.CreationState[0].LabelData.labelData
+          });
+        });
+      }
+    );
+  } catch (e) {
+    callback(e);
+  }
+}
+
+export default { checkAddress, getLabel, getOldLabel };
