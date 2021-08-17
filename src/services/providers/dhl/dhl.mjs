@@ -25,6 +25,7 @@ async function checkAddress(data, callback) {
         if (data.recipient.countryCode !== "DE") {
           await client.validateShipment(requestBuilder.buildBody(data, false), function(err, result, rawResponse, soapHeader, rawRequest) {
             if (err) return callback(err);
+            console.log(rawRequest,rawResponse)
             if (result.Status.statusCode !== 0) return callback(JSON.stringify(result));
             callback(null);
           });
