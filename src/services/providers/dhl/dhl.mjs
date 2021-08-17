@@ -1,6 +1,7 @@
 import soap from "soap";
 import dotenv from "dotenv";
 import util from "../../../util/util.mjs";
+import requestBuilder from "./requestBuilder.mjs";
 
 dotenv.config();
 
@@ -9,119 +10,7 @@ let dev = parseInt(process.env.DHL_DEV);
 let httpAuthUser = dev ? process.env.DHL_HTTP_AUTH_USER_DEV : process.env.DHL_HTTP_AUTH_USER;
 let httpAuthPassword = dev ? process.env.DHL_HTTP_AUTH_PASS_DEV : process.env.DHL_HTTP_AUTH_PASS;
 let endpoint = dev ? "https://cig.dhl.de/services/sandbox/soap" : "https://cig.dhl.de/services/production/soap";
-/*
-A4: common label laser printing A4 plain paper;
-910-300-700: common label laser printing 105 x 205 mm (910-300-700);
-910-300-700-oz: common label laser printing 105 x 205 mm (910-300-700) without additional label;
-910-300-600: common label thermal printing 103 x 199 (910-300-600, 910-300-610);
-910-300-710: common label laser printing 105 x 208 mm (910-300-710); 100x70mm:
-100x70mm (only for Warenpost);
-*/
-let labelSize = "910-300-700-oz";
-const buildHeader = (action) => {
-  return {
-    "cis:Authentification": {
-      "cis:user": dev ? process.env.DHL_HTTP_AUTH_USER_DEV : process.env.DHL_USER,
-      "cis:signature": dev ? process.env.DHL_PASS_DEV : process.env.DHL_PASS
-    },
-    "cis:SOAPAction": `urn:${action}`
-  };
-};
-const buildBody = (data) => {
-  return {
-    Version: {
-      majorRelease: "3",
-      minorRelease: "1"
-    },
-    ShipmentOrder: {
-      SequenceNumber: "",
-      Shipment: {
-        ShipmentDetails: {
-          product: "V01PAK",
-          accountNumber: dev ? process.env.DHL_ACCOUNT_NUMBER_DEV :process.env.DHL_ACCOUNT_NUMBER,
-          //customerReference: "Ref. 123456",
-          shipmentDate: util.generateShipmentDate(),
-          costCentre: "",
-          ShipmentItem: {
-            weightInKG: "3",
-            lengthInCM: "60",
-            widthInCM: "60",
-            heightInCM: "60"
-          },
-          Service: "",
-          Notification: {
-            recipientEmailAddress: data.recipient.email || process.env.ALT_TRACKING_MAIL
-          }
-        },
-        Shipper: {
-          Name: {
-            name1: `${data.sender.firstName} ${data.sender.lastName}`,
-            name2: `${data.sender.street} ${data.sender.streetNo}`,
-            name3: `${data.sender.city} ${data.sender.zip}`,
-          },
-          Address: {
-            streetName: data.sender.street,
-            streetNumber: data.sender.streetNo,
-            zip: data.sender.zip,
-            city: data.sender.city,
-            Origin: {
-              country: "",
-              countryISOCode: data.sender.country
-            }
-          },
-          Communication: {
-            phone: data.sender.phone,
-            email: data.sender.email,
-            contactPerson: `${data.sender.firstName} ${data.sender.lastName}`
-          }
-        },
-        Receiver: {
-          name1: `${data.recipient.firstName} ${data.recipient.lastName}`,
-          Address: {
-            name2: `${data.recipient.street} ${data.recipient.streetNo}`,
-            name3: `${data.recipient.city} ${data.recipient.zip}`,
-            streetName: data.recipient.street,
-            streetNumber: data.recipient.streetNo,
-            zip: data.recipient.zip,
-            city: data.recipient.city,
-            Origin: {
-              country: "",
-              countryISOCode: data.recipient.countryCode
-            }
-          },
-          Communication: {
-            phone: data.recipient.phone,
-            email: data.recipient.email || process.env.ALT_TRACKING_MAIL,
-            contactPerson: `${data.recipient.firstName} ${data.recipient.lastName}`
-          }
-        }
-      }
-      //"PrintOnlyIfCodeable active=1": ""
-    },
-    labelResponseType: "B64",
-    groupProfileName: "",
-    labelFormat: labelSize,
-    labelFormatRetoure: labelSize,
-    combinedPrinting: 0
-  };
-};
 
-const buildGetLabelBody = (number) => {
-  return {
-    Version: {
-      majorRelease: "3",
-      minorRelease: "1"
-    },
-    shipmentNumber:number,
-    labelResponseType: "B64",
-    groupProfileName: "",
-    labelFormat: labelSize,
-    labelFormatRetoure: labelSize,
-    combinedPrinting: 0
-  };
-};
-async function checkAddressInternational() {
-}
 
 async function checkAddress(data, callback) {
   try {
@@ -131,21 +20,29 @@ async function checkAddress(data, callback) {
       async function(err, client) {
         if (err) throw err;
         client.setSecurity(new soap.BasicAuthSecurity(httpAuthUser, httpAuthPassword));
-        client.addSoapHeader(buildHeader("validateShipment"));
-        //console.log("httpUser: " + httpAuthUser);
-        //console.log("httpPassword:" + httpAuthPassword);
-        //console.log(buildHeader("validateShipment"));
-        await client.validateShipment(buildBody(data), function(err, result, rawResponse, soapHeader, rawRequest) {
-          if (err) return callback(err);
-          if (result.Status.statusCode !== 0) return callback(JSON.stringify(result));
-          callback(null);
-        });
+        client.addSoapHeader(requestBuilder.buildHeader("validateShipment"));
+
+        if (data.recipient.countryCode !== "DE") {
+          await client.validateShipment(requestBuilder.buildBody(data, false), function(err, result, rawResponse, soapHeader, rawRequest) {
+            if (err) return callback(err);
+            if (result.Status.statusCode !== 0) return callback(JSON.stringify(result));
+            callback(null);
+          });
+
+        } else {
+          await client.validateShipment(requestBuilder.buildBody(data, true), function(err, result, rawResponse, soapHeader, rawRequest) {
+            if (err) return callback(err);
+            if (result.Status.statusCode !== 0) return callback(JSON.stringify(result));
+            callback(null);
+          });
+        }
       }
     );
   } catch (e) {
     callback(e);
   }
 }
+
 async function getLabel(data, callback) {
   try {
     soap.createClient(
@@ -154,18 +51,30 @@ async function getLabel(data, callback) {
       async function(err, client) {
         if (err) throw err;
         client.setSecurity(new soap.BasicAuthSecurity(httpAuthUser, httpAuthPassword));
-        client.addSoapHeader(buildHeader("getLabel"));
+        client.addSoapHeader(requestBuilder.buildHeader("getLabel"));
         //console.log("httpUser: " + httpAuthUser);
         //console.log("httpPassword:" + httpAuthPassword);
         //console.log(buildHeader("createShipmentOrder"));
-        await client.createShipmentOrder(buildBody(data), function(err, result, rawResponse, soapHeader, rawRequest) {
-          if (err) return callback(err);
-          if (result.Status.statusCode !== 0) return callback(JSON.stringify(result));
-          callback(null, {
-            trackingNumber:result.CreationState[0].shipmentNumber,
-            labelContent:result.CreationState[0].LabelData.labelData
+        if (data.recipient.countryCode !== "DE") {
+          await client.createShipmentOrder(requestBuilder.buildBody(data, false), function(err, result, rawResponse, soapHeader, rawRequest) {
+            if (err) return callback(err);
+            if (result.Status.statusCode !== 0) return callback(JSON.stringify(result));
+            callback(null, {
+              trackingNumber: result.CreationState[0].shipmentNumber,
+              labelContent: result.CreationState[0].LabelData.labelData
+            });
           });
-        });
+        } else {
+          await client.createShipmentOrder(requestBuilder.buildBody(data, true), function(err, result, rawResponse, soapHeader, rawRequest) {
+            if (err) return callback(err);
+            if (result.Status.statusCode !== 0) return callback(JSON.stringify(result));
+            callback(null, {
+              trackingNumber: result.CreationState[0].shipmentNumber,
+              labelContent: result.CreationState[0].LabelData.labelData
+            });
+          });
+
+        }
       }
     );
   } catch (e) {
@@ -173,8 +82,7 @@ async function getLabel(data, callback) {
   }
 }
 
-async function getOldLabel(tracking, callback){
-
+async function getOldLabel(tracking, callback) {
   try {
     soap.createClient(
       "https://cig.dhl.de/cig-wsdls/com/dpdhl/wsdl/geschaeftskundenversand-api/3.1/geschaeftskundenversand-api-3.1.wsdl",
@@ -182,14 +90,14 @@ async function getOldLabel(tracking, callback){
       async function(err, client) {
         if (err) throw err;
         client.setSecurity(new soap.BasicAuthSecurity(httpAuthUser, httpAuthPassword));
-        client.addSoapHeader(buildHeader("createShipmentOrder"));
-        await client.getLabel(buildGetLabelBody(tracking), function(err, result, rawResponse, soapHeader, rawRequest) {
-          console.log(err)
+        client.addSoapHeader(requestBuilder.buildHeader("createShipmentOrder"));
+        await client.getLabel(requestBuilder.buildGetLabelBody(tracking), function(err, result, rawResponse, soapHeader, rawRequest) {
+          console.log(err);
           if (err) return callback(err);
           if (result.Status.statusCode !== 0) return callback(JSON.stringify(result));
           callback(null, {
-            trackingNumber:result.CreationState[0].shipmentNumber,
-            labelContent:result.CreationState[0].LabelData.labelData
+            trackingNumber: result.CreationState[0].shipmentNumber,
+            labelContent: result.CreationState[0].LabelData.labelData
           });
         });
       }
