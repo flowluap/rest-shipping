@@ -34,6 +34,7 @@ function sanitizeAddress(recipient) {
         notice: recipient.address2
     };
 
+    console.log(sanitizedAddress)
     if (checkJSON(recipient)) {
         try {
             sanitizedAddress = { ...sanitizedAddress, ...extractHouseFromStreet(recipient.address1) };
@@ -44,7 +45,6 @@ function sanitizeAddress(recipient) {
                 throw new Error("Could not extract streetNo");
             }
         }
-        console.log(sanitizedAddress)
         return sanitizedAddress;
     } else {
         throw new Error("Missing params in Shopify JSON");
