@@ -42,10 +42,12 @@ const buildBody = (data, national) => {
             widthInCM: "60",
             heightInCM: "60"
           },
-          //Service:"",
+          Service:"x-x-x-x-x-x",
+/*
           _xml: `<Service>
                     ${national ? "" : "<Premium active=\"1\"/>"}
                  </Service>`,
+*/
           Notification: {
             recipientEmailAddress: data.recipient.email || process.env.ALT_TRACKING_MAIL
           }
