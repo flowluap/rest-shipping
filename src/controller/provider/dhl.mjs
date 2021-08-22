@@ -28,7 +28,7 @@ async function checkAddress(req, res, next) {
   let addressSource = req.body.addressSource;
   let response = await sanitizer._sanitizeAddress(sender, recipient, addressSource);
   await dhlService.checkAddress(response, (error) => {
-    if (error) return next(new BadRequestError(error));
+    if (error) return next(new BadRequestError(JSON.stringify(error)));
 
     res.json(response);
   });
