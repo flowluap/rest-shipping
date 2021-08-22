@@ -23,12 +23,24 @@ async function checkAddress(data, callback) {
         client.addSoapHeader(requestBuilder.buildHeader("validateShipment"));
 
         if (data.recipient.countryCode !== "DE") {
-          await client.validateShipment(requestBuilder.buildBody(data, false), function(err, result, rawResponse, soapHeader, rawRequest) {
-            console.log(err, rawResponse);
-            if (err) return callback({ err, rawResponse });
-            if (result.Status.statusCode !== 0) return callback(JSON.stringify(result));
-            callback(null);
-          });
+          if (data.recipient.countryCode.indexOf([[
+            "AT", "BE", "BG", "CY", "CZ",
+            "DE", "DK", "EE", "ES", "FI",
+            "FR", "GR", "HR", "HU", "IE",
+            "IT", "LT", "LU", "LV", "MT",
+            "NL", "PL", "PT", "RO", "SE",
+            "SI", "SK"
+          ]])) {
+
+            await client.validateShipment(requestBuilder.buildBody(data, false), function(err, result, rawResponse, soapHeader, rawRequest) {
+              console.log(err, rawResponse);
+              if (err) return callback({ err, rawResponse });
+              if (result.Status.statusCode !== 0) return callback(JSON.stringify(result));
+              callback(null);
+            });
+          } else {
+            throw Error("Not supported atm");
+          }
 
         } else {
           await client.validateShipment(requestBuilder.buildBody(data, true), function(err, result, rawResponse, soapHeader, rawRequest) {
