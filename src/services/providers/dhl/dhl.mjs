@@ -22,15 +22,19 @@ async function checkAddress(data, callback) {
         client.setSecurity(new soap.BasicAuthSecurity(httpAuthUser, httpAuthPassword));
         client.addSoapHeader(requestBuilder.buildHeader("validateShipment"));
 
+        if (data.recipient.street.includes("Packstation")) {
+          data.recipient.isPackingStation = true;
+          data.recipient.postNumber = data.recipient.notice;
+        }
         if (data.recipient.countryCode !== "DE") {
-          if (data.recipient.countryCode.indexOf([[
+          if (data.recipient.countryCode.indexOf([
             "AT", "BE", "BG", "CY", "CZ",
             "DE", "DK", "EE", "ES", "FI",
             "FR", "GR", "HR", "HU", "IE",
             "IT", "LT", "LU", "LV", "MT",
             "NL", "PL", "PT", "RO", "SE",
             "SI", "SK"
-          ]])) {
+          ])) {
 
             await client.validateShipment(requestBuilder.buildBody(data, false), function(err, result, rawResponse, soapHeader, rawRequest) {
               console.log(err, rawResponse);
@@ -38,6 +42,7 @@ async function checkAddress(data, callback) {
               if (result.Status.statusCode !== 0) return callback(JSON.stringify(result));
               callback(null);
             });
+
           } else {
             throw Error("Not supported atm");
           }
@@ -68,6 +73,10 @@ async function getLabel(data, callback) {
         //console.log("httpUser: " + httpAuthUser);
         //console.log("httpPassword:" + httpAuthPassword);
         //console.log(buildHeader("createShipmentOrder"));
+        if (data.recipient.street.includes("Packstation")) {
+          data.recipient.isPackingStation = true;
+          data.recipient.postNumber = data.recipient.notice;
+        }
         if (data.recipient.countryCode !== "DE") {
           await client.createShipmentOrder(requestBuilder.buildBody(data, false), function(err, result, rawResponse, soapHeader, rawRequest) {
             if (err) return callback(err);

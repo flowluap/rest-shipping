@@ -77,9 +77,9 @@ const buildBody = (data, national) => {
         Receiver: {
           name1: `${data.recipient.firstName} ${data.recipient.lastName}`,
           Address: {
-            name2: `${data.recipient.street} ${data.recipient.streetNo}`,
+            name2: data.recipient.isPackingStation ? data.recipient.postNumber :`${data.recipient.street} ${data.recipient.streetNo}`,
             name3: `${data.recipient.city} ${data.recipient.zip}`,
-            streetName: data.recipient.street,
+            streetName: data.recipient.isPackingStation ? "Packstation" : data.recipient.street,
             streetNumber: data.recipient.streetNo,
             zip: data.recipient.zip,
             city: data.recipient.city,

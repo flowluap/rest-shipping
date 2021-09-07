@@ -34,7 +34,6 @@ function sanitizeAddress(recipient) {
         notice: recipient.address2
     };
 
-    console.log(sanitizedAddress)
     if (checkJSON(recipient)) {
         try {
             sanitizedAddress = { ...sanitizedAddress, ...extractHouseFromStreet(recipient.address1) };
